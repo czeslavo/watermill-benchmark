@@ -20,6 +20,7 @@ import (
 	"github.com/ThreeDotsLabs/watermill-sql/pkg/sql"
 	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/ThreeDotsLabs/watermill/pubsub/gochannel"
+	"github.com/czeslavo/watermill-firestore/pkg/firestore"
 )
 
 const (
@@ -286,6 +287,40 @@ var pubSubDefinitions = map[string]PubSubDefinition{
 						panic(err)
 					}
 					return sub, nil
+				}, 16,
+			)
+
+			return pub, sub
+		},
+	},
+	"firestore": {
+		MessagesCount: 10000,
+		Constructor: func() (message.Publisher, message.Subscriber) {
+			pub, err := firestore.NewPublisher(
+				firestore.PublisherConfig{
+					ProjectID:             os.Getenv("FIRESTORE_PROJECT_ID"),
+					MessagePublishTimeout: time.Second * 60,
+				},
+				logger,
+			)
+			if err != nil {
+				panic(err)
+			}
+
+			sub := NewMultiplier(
+				func() (message.Subscriber, error) {
+					subscriber, err := firestore.NewSubscriber(
+						firestore.SubscriberConfig{
+							ProjectID: os.Getenv("FIRESTORE_PROJECT_ID"),
+							Timeout:   time.Second * 30,
+						},
+						logger,
+					)
+					if err != nil {
+						return nil, err
+					}
+
+					return subscriber, nil
 				}, 16,
 			)
 

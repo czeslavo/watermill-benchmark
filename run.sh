@@ -8,14 +8,14 @@ if [ -z "$compose" ]; then
     exit 1
 fi
 
-compose_flags=
-if [ -f "./compose/$compose.yml" ]; then
-    compose_flags="-f ./compose/$compose.yml"
-    docker-compose $compose_flags up -d --remove-orphans
+# compose_flags=
+# if [ -f "./compose/$compose.yml" ]; then
+#     compose_flags="-f ./compose/$compose.yml"
+#     docker-compose $compose_flags up -d --remove-orphans
 
-    # TODO replace with waiting for port
-    sleep 20
-fi
+#     # TODO replace with waiting for port
+#     sleep 20
+# fi
 
 if [ ! -d ./vendor ]; then
     docker-compose -f ./compose/benchmark.yml run \

@@ -1,7 +1,7 @@
 provider "google" {
   credentials = "${file(var.credentials_path)}"
   project     = "${var.project}"
-  region      = "europe-north1"
+  region      = "europe-west3"
 }
 
 data "google_compute_image" "ubuntu_18" {
@@ -12,7 +12,7 @@ data "google_compute_image" "ubuntu_18" {
 resource "google_compute_instance" "default" {
   name         = "benchmark-${formatdate("YYYYMMDDhhmmss", timestamp())}"
   machine_type = "n1-highcpu-16"
-  zone         = "europe-north1-a"
+  zone         = "europe-west3-a"
 
   boot_disk {
     initialize_params {
